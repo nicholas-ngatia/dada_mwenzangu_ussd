@@ -168,15 +168,15 @@ def ussd():
                 if selection:
                     response = f"CON The following person is in the same location as you: 0{selection['phone_number'][3:]}. Would you like to contact them?"
                     next_screen = "help_continue"
-                else:
-                    response = "CON We unfortunately do not have a requested person in the area. Would you like to check a location slightly further away?\n1. Confirm"
-                    next_screen = "next_location"
                     r.hmset(
                         session_id,
                         {
                             "selection": selection['phone_number'],
                         },
-                    )                    
+                    )   
+                else:
+                    response = "CON We unfortunately do not have a requested person in the area. Would you like to check a location slightly further away?\n1. Confirm"
+                    next_screen = "next_location"                 
                 r.hmset(
                     session_id,
                     {
