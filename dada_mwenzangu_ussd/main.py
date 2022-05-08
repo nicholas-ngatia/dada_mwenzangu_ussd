@@ -200,7 +200,7 @@ def ussd():
             response = "END We are currently sending you an SMS with their details to be able to contact them. Please wait."
             client_table = db["client_details"]
             client_table.update_one(
-                {"phone_number": phone_number}, {"set": {"used": 1}}
+                {"phone_number": phone_number}, {"$set": {"used": 1}}
             )
         elif current_screen == "next_location":
             client_table = db["client_details"]
