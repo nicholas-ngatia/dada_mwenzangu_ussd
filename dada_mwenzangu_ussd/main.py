@@ -53,9 +53,7 @@ def ussd():
             print(current_screen)
             customer_data = r.hgetall(phone_number)
             print(customer_data)
-            print(db["client_details"].find_one(
-                {"client_number": phone_number}
-            ))
+            print(db["client_details"].find_one({"client_number": phone_number}))
             if not customer_data and not db["client_details"].find_one(
                 {"client_number": phone_number}
             ):
@@ -75,7 +73,7 @@ def ussd():
                     "customer_data": str(customer_data),
                     "current_screen": current_screen,
                     "previous_screen": "main_menu",
-                    "response": response
+                    "response": response,
                 },
             )
 
@@ -97,9 +95,7 @@ def ussd():
         elif current_screen == "register_location":
             county = county_check(ussd_string)
             if county == "Invalid":
-                response = (
-                    f"CON Invalid choice selected. Please try again.\n{session['response']}"
-                )
+                response = f"CON Invalid choice selected. Please try again.\n{session['response']}"
             else:
                 response = "CON Please enter your id number to complete the process"
             r.hmset(
@@ -154,14 +150,22 @@ def ussd():
                     "client_location_id": customer_data["county_id"],
                     "client_id": customer_data["id_number"],
                     "phone_number": phone_number,
-                    "used": 0
+                    "used": 0,
                 }
             )
         elif current_screen == "help_menu":
             if ussd_string == "1":
                 client_table = db["client_details"]
-                requester_details = client_table.find_one({"phone_number": phone_number})
-                selection = client_table.find_one({"used": 0, "client_location_id": requester_details['client_location_id'], "phone_number": {"$ne": phone_number}})
+                requester_details = client_table.find_one(
+                    {"phone_number": phone_number}
+                )
+                selection = client_table.find_one(
+                    {
+                        "used": 0,
+                        "client_location_id": requester_details["client_location_id"],
+                        "phone_number": {"$ne": phone_number},
+                    }
+                )
                 if selection:
                     response = f"CON The following person is in the same location as you: 0{selection['phone_number'][3:]}. Would you like to contact them?"
                     next_screen = "help_continue"
@@ -174,6 +178,7 @@ def ussd():
                         "current_screen": next_screen,
                         "previous_screen": current_screen,
                         "response": response,
+                        "selection": selection[phone_number],
                     },
                 )
             elif ussd_string == "2":
@@ -188,11 +193,24 @@ def ussd():
                     },
                 )
         elif current_screen == "help_continue":
+            customer_data = ast.literal_eval(str(session))
             response = "END We are currently sending you an SMS with their details to be able to contact them. Please wait."
+            client_table = db["client_details"]
+            client_table.update_one(
+                {"phone_number": phone_number}, {"set": {"used": 1}}
+            )
         elif current_screen == "next_location":
             requester_details = client_table.find_one({"phone_number": phone_number})
-            second_choice = db['closest_locations'].find_one({"location": requester_details['client_location_id']})
-            selection = client_table.find_one({"used": 0, "client_location_id": second_choice['next_closest_location'], "phone_number": {"$ne": phone_number}})
+            second_choice = db["closest_locations"].find_one(
+                {"location": requester_details["client_location_id"]}
+            )
+            selection = client_table.find_one(
+                {
+                    "used": 0,
+                    "client_location_id": second_choice["next_closest_location"],
+                    "phone_number": {"$ne": phone_number},
+                }
+            )
             if selection:
                 response = f"CON The following person is in the same location as you: 0{selection['phone_number'][3:]}. Would you like to contact them?\n1. Confirm"
                 next_screen = "help_continue"
@@ -212,6 +230,7 @@ def ussd():
     except Exception as e:
         print(f"Shit's fucking {e}")
         return "END An error occurred, please try again later"
+
 
 if __name__ == "__main__":
     app.run(debug=True)
