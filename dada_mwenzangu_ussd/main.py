@@ -164,7 +164,6 @@ def ussd():
                         "phone_number": {"$ne": phone_number},
                     }
                 )
-                print(selection)
                 if selection:
                     response = f"CON The following person is in the same location as you: 0{selection['phone_number'][3:]}. Would you like to contact them?"
                     next_screen = "help_continue"
@@ -204,6 +203,7 @@ def ussd():
                 {"phone_number": phone_number}, {"set": {"used": 1}}
             )
         elif current_screen == "next_location":
+            client_table = db["client_details"]
             requester_details = client_table.find_one({"phone_number": phone_number})
             second_choice = db["closest_locations"].find_one(
                 {"location": requester_details["client_location_id"]}
