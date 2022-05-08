@@ -163,7 +163,7 @@ def ussd():
                 requester_details = client_table.find_one({"phone_number": phone_number})
                 selection = client_table.find_one({"used": 0, "client_location_id": requester_details['client_location_id'], "phone_number": {"$ne": phone_number}})
                 if selection:
-                    response = f"CON The following person is in the same location as you: {selection['phone_number']}. Would you like to contact them?"
+                    response = f"CON The following person is in the same location as you: 0{selection['phone_number'][3:]}. Would you like to contact them?"
                     next_screen = "help_continue"
                 else:
                     response = "CON We unfortunately do not have a requested person in the area. Would you like to check a location slightly further away?\n1. Confirm"
@@ -194,7 +194,7 @@ def ussd():
             second_choice = db['closest_locations'].find_one({"location": requester_details['client_location_id']})
             selection = client_table.find_one({"used": 0, "client_location_id": second_choice['next_closest_location'], "phone_number": {"$ne": phone_number}})
             if selection:
-                response = f"CON The following person is in the same location as you: {selection['phone_number']}. Would you like to contact them?"
+                response = f"CON The following person is in the same location as you: 0{selection['phone_number'][3:]}. Would you like to contact them?\n1. Confirm"
                 next_screen = "help_continue"
             else:
                 response = "CON We unfortunately do not have a requested person in the area. Kindly check back later to see more options"
