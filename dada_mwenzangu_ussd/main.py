@@ -128,7 +128,7 @@ def ussd():
             )
         elif current_screen == "register_confirm":
             customer_data = ast.literal_eval(str(session))
-            response = "CON Thank you for registering for Dada Mwenzangu.\n1. Offer help\n2. Request help"
+            response = "CON Thank you for registering for Dada Mwenzangu.\n1. Request help\n2. Offer help"
             r.hmset(
                 session_id,
                 {
@@ -176,7 +176,7 @@ def ussd():
                         "current_screen": next_screen,
                         "previous_screen": current_screen,
                         "response": response,
-                        "selection": selection[phone_number],
+                        "selection": selection['phone_number'],
                     },
                 )
             elif ussd_string == "2":
