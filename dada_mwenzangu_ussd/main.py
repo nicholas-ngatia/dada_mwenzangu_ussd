@@ -120,7 +120,7 @@ def ussd():
             validate = id_validate(ussd_string)
             if validate:
                 customer_data = ast.literal_eval(str(session))
-                response = f"Kindly confirm details\nName = {customer_data['customer_name']}\nCounty = {customer_data['county']}\nId number = {ussd_string}\n1. Confirm"
+                response = f"CON Kindly confirm details\nName = {customer_data['customer_name']}\nCounty = {customer_data['county']}\nId number = {ussd_string}\n1. Confirm"
             else:
                 response = "CON Invalid id number entered, please try again"
             r.hmset(
@@ -134,7 +134,7 @@ def ussd():
             )
         elif current_screen == "register_confirm":
             customer_data = ast.literal_eval(str(session))
-            response = "Thank you for registering for Dada Mwenzangu.\n1. Offer help\n2. Request help"
+            response = "CON Thank you for registering for Dada Mwenzangu.\n1. Offer help\n2. Request help"
             r.hmset(
                 session_id,
                 {
