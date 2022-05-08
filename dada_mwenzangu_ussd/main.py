@@ -183,7 +183,6 @@ def ussd():
                         "current_screen": next_screen,
                         "previous_screen": current_screen,
                         "response": response,
-                        "selection": selection['phone_number'],
                     },
                 )
             elif ussd_string == "2":
