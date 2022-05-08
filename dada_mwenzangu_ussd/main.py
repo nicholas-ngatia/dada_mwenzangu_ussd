@@ -170,6 +170,12 @@ def ussd():
                 else:
                     response = "CON We unfortunately do not have a requested person in the area. Would you like to check a location slightly further away?\n1. Confirm"
                     next_screen = "next_location"
+                    r.hmset(
+                        session_id,
+                        {
+                            "selection": selection['phone_number'],
+                        },
+                    )                    
                 r.hmset(
                     session_id,
                     {
