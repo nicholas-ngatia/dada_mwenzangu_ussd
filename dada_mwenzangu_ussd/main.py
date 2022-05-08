@@ -57,10 +57,6 @@ def ussd():
             if not customer_data and not db["client_details"].find_one(
                 {"client_number": phone_number}
             ):
-                r.hmset(
-                    phone_number,
-                    {"registered": "0"},
-                )
                 response = "CON Welcome to Dada Mwenzangu, where you can help women in need. Kindly enter your name to proceed."
                 current_screen = "register_start"
             else:
